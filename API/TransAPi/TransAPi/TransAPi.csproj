@@ -229,8 +229,21 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\Users.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Entity\Branch.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Permission.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Role.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RolePermission.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\Trans.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -249,15 +262,24 @@
     <Compile Include="Entity\User.cs">
       <DependentUpon>Trans.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\UserPermission.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\UsersRole.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\UserModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
+    <Compile Include="Repository\ICRUD.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\UserServices.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -337,7 +359,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Repository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

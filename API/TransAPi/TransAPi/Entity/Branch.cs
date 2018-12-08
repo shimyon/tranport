@@ -12,29 +12,27 @@ namespace TransAPi.Entity
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Branch
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Branch()
         {
-            this.UsersRoles = new HashSet<UsersRole>();
-            this.UserPermissions = new HashSet<UserPermission>();
+            this.Roles = new HashSet<Role>();
+            this.Users = new HashSet<User>();
+            this.Permissions = new HashSet<Permission>();
         }
     
-        public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string SurName { get; set; }
-        public string LastName { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
+        public int BranchId { get; set; }
+        public string BranchName { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<bool> IsEnable { get; set; }
-        public Nullable<int> BranchId { get; set; }
+        public Nullable<bool> IsMaster { get; set; }
     
-        public virtual Branch Branch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UsersRole> UsersRoles { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        public virtual ICollection<User> Users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Permission> Permissions { get; set; }
     }
 }

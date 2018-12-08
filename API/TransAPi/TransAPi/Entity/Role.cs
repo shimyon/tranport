@@ -12,29 +12,25 @@ namespace TransAPi.Entity
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Role
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public User()
+        public Role()
         {
             this.UsersRoles = new HashSet<UsersRole>();
-            this.UserPermissions = new HashSet<UserPermission>();
+            this.RolePermissions = new HashSet<RolePermission>();
         }
     
-        public int UserId { get; set; }
-        public string FirstName { get; set; }
-        public string SurName { get; set; }
-        public string LastName { get; set; }
-        public string Password { get; set; }
-        public string Email { get; set; }
-        public Nullable<System.DateTime> CreatedOn { get; set; }
-        public Nullable<bool> IsEnable { get; set; }
+        public int RoleId { get; set; }
+        public string RoleName { get; set; }
         public Nullable<int> BranchId { get; set; }
+        public Nullable<System.DateTime> CreateOn { get; set; }
+        public Nullable<bool> IsDelete { get; set; }
     
         public virtual Branch Branch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsersRole> UsersRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        public virtual ICollection<RolePermission> RolePermissions { get; set; }
     }
 }

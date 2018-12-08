@@ -5,7 +5,44 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="TransModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="Users">
+        <EntityType Name="Branch">
+          <Key>
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="BranchId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="BranchName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedOn" Type="datetime" />
+          <Property Name="IsEnable" Type="bit" />
+          <Property Name="IsMaster" Type="bit" />
+        </EntityType>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PermissionName" Type="varchar" MaxLength="50" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="BranchID" Type="int" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BranchId" Type="int" />
+          <Property Name="CreateOn" Type="datetime" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="RolePermission">
+          <Key>
+            <PropertyRef Name="RolePermissionId" />
+          </Key>
+          <Property Name="RolePermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="int" />
+          <Property Name="PermissionId" Type="int" />
+        </EntityType>
+        <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
@@ -17,51 +54,500 @@
           <Property Name="Email" Type="nvarchar(max)" />
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="IsEnable" Type="bit" />
+          <Property Name="BranchId" Type="int" />
         </EntityType>
+        <EntityType Name="UserPermission">
+          <Key>
+            <PropertyRef Name="UserPermissionId" />
+          </Key>
+          <Property Name="UserPermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" />
+          <Property Name="PermissionId" Type="int" />
+        </EntityType>
+        <EntityType Name="UsersRole">
+          <Key>
+            <PropertyRef Name="RoleUserId" />
+          </Key>
+          <Property Name="RoleUserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Permission_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
+          <End Role="Permission" Type="Self.Permission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="Permission">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Role_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
+          <End Role="Role" Type="Self.Role" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="Role">
+              <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolePermission_Role">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="0..1" />
+          <End Role="RolePermission" Type="Self.RolePermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="RolePermission">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolePermission_Role1">
+          <End Role="Role" Type="Self.Role" Multiplicity="0..1" />
+          <End Role="RolePermission" Type="Self.RolePermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="RolePermission">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_Permission2">
+          <End Role="Permission" Type="Self.Permission" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_User">
+          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="UserPermission" Type="Self.UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Branch">
+          <End Role="Branch" Type="Self.Branch" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersRole_Role">
+          <End Role="Role" Type="Self.Role" Multiplicity="1" />
+          <End Role="UsersRole" Type="Self.UsersRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="UsersRole">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersRole_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UsersRole" Type="Self.UsersRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersRole">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="TransModelStoreContainer">
-          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Branch" EntityType="Self.Branch" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Permission" EntityType="Self.Permission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolePermission" EntityType="Self.RolePermission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserPermission" EntityType="Self.UserPermission" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UsersRole" EntityType="Self.UsersRole" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Permission_Branch" Association="Self.FK_Permission_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="Permission" EntitySet="Permission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Role_Branch" Association="Self.FK_Role_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="Role" EntitySet="Role" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolePermission_Role" Association="Self.FK_RolePermission_Role">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="RolePermission" EntitySet="RolePermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolePermission_Role1" Association="Self.FK_RolePermission_Role1">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="RolePermission" EntitySet="RolePermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_Permission2" Association="Self.FK_UserPermission_Permission2">
+            <End Role="Permission" EntitySet="Permission" />
+            <End Role="UserPermission" EntitySet="UserPermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_User" Association="Self.FK_UserPermission_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UserPermission" EntitySet="UserPermission" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Branch" Association="Self.FK_Users_Branch">
+            <End Role="Branch" EntitySet="Branch" />
+            <End Role="User" EntitySet="User" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersRole_Role" Association="Self.FK_UsersRole_Role">
+            <End Role="Role" EntitySet="Role" />
+            <End Role="UsersRole" EntitySet="UsersRole" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersRole_User" Association="Self.FK_UsersRole_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UsersRole" EntitySet="UsersRole" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="TransModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="TransEntities" annotation:LazyLoadingEnabled="true" >
+          <EntitySet Name="Branches" EntityType="TransModel.Branch" />
+          <EntitySet Name="Roles" EntityType="TransModel.Role" />
           <EntitySet Name="Users" EntityType="TransModel.User" />
-        </EntityContainer>
+          <AssociationSet Name="FK_Role_Branch" Association="TransModel.FK_Role_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="Role" EntitySet="Roles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_Branch" Association="TransModel.FK_Users_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="User" EntitySet="Users" />
+          </AssociationSet>
+          <EntitySet Name="UsersRoles" EntityType="TransModel.UsersRole" />
+          <AssociationSet Name="FK_UsersRole_Role" Association="TransModel.FK_UsersRole_Role">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="UsersRole" EntitySet="UsersRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UsersRole_User" Association="TransModel.FK_UsersRole_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UsersRole" EntitySet="UsersRoles" />
+          </AssociationSet>
+          <EntitySet Name="Permissions" EntityType="TransModel.Permission" />
+          <AssociationSet Name="FK_Permission_Branch" Association="TransModel.FK_Permission_Branch">
+            <End Role="Branch" EntitySet="Branches" />
+            <End Role="Permission" EntitySet="Permissions" />
+          </AssociationSet>
+          <EntitySet Name="UserPermissions" EntityType="TransModel.UserPermission" />
+          <AssociationSet Name="FK_UserPermission_Permission2" Association="TransModel.FK_UserPermission_Permission2">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="UserPermission" EntitySet="UserPermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserPermission_User" Association="TransModel.FK_UserPermission_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UserPermission" EntitySet="UserPermissions" />
+          </AssociationSet>
+          <EntitySet Name="RolePermissions" EntityType="TransModel.RolePermission" />
+          <AssociationSet Name="FK_RolePermission_Role" Association="TransModel.FK_RolePermission_Role">
+            <End Role="Permission" EntitySet="Permissions" />
+            <End Role="RolePermission" EntitySet="RolePermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolePermission_Role1" Association="TransModel.FK_RolePermission_Role1">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="RolePermission" EntitySet="RolePermissions" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Branch">
+          <Key>
+            <PropertyRef Name="BranchId" />
+          </Key>
+          <Property Name="BranchId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="BranchName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsEnable" Type="Boolean" />
+          <Property Name="IsMaster" Type="Boolean" />
+          <NavigationProperty Name="Roles" Relationship="TransModel.FK_Role_Branch" FromRole="Branch" ToRole="Role" />
+          <NavigationProperty Name="Users" Relationship="TransModel.FK_Users_Branch" FromRole="Branch" ToRole="User" />
+          <NavigationProperty Name="Permissions" Relationship="TransModel.FK_Permission_Branch" FromRole="Branch" ToRole="Permission" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BranchId" Type="Int32" />
+          <Property Name="CreateOn" Type="DateTime" Precision="3" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <NavigationProperty Name="Branch" Relationship="TransModel.FK_Role_Branch" FromRole="Role" ToRole="Branch" />
+          <NavigationProperty Name="UsersRoles" Relationship="TransModel.FK_UsersRole_Role" FromRole="Role" ToRole="UsersRole" />
+          <NavigationProperty Name="RolePermissions" Relationship="TransModel.FK_RolePermission_Role1" FromRole="Role" ToRole="RolePermission" />
+        </EntityType>
         <EntityType Name="User">
           <Key>
             <PropertyRef Name="UserId" />
           </Key>
           <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
-          <Property Name="SurName" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
-          <Property Name="LastName" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
-          <Property Name="Password" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
-          <Property Name="Email" Type="String" Unicode="true" FixedLength="false" MaxLength="Max" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SurName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="IsEnable" Type="Boolean" />
+          <Property Name="BranchId" Type="Int32" />
+          <NavigationProperty Name="Branch" Relationship="TransModel.FK_Users_Branch" FromRole="User" ToRole="Branch" />
+          <NavigationProperty Name="UsersRoles" Relationship="TransModel.FK_UsersRole_User" FromRole="User" ToRole="UsersRole" />
+          <NavigationProperty Name="UserPermissions" Relationship="TransModel.FK_UserPermission_User" FromRole="User" ToRole="UserPermission" />
         </EntityType>
-      </Schema>
+        <Association Name="FK_Role_Branch">
+          <End Type="TransModel.Branch" Role="Branch" Multiplicity="0..1" />
+          <End Type="TransModel.Role" Role="Role" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="Role">
+              <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_Branch">
+          <End Type="TransModel.Branch" Role="Branch" Multiplicity="0..1" />
+          <End Type="TransModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="BranchId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UsersRole">
+          <Key>
+            <PropertyRef Name="RoleUserId" />
+          </Key>
+          <Property Name="RoleUserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Role" Relationship="TransModel.FK_UsersRole_Role" FromRole="UsersRole" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="TransModel.FK_UsersRole_User" FromRole="UsersRole" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_UsersRole_Role">
+          <End Type="TransModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="TransModel.UsersRole" Role="UsersRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="UsersRole">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UsersRole_User">
+          <End Type="TransModel.User" Role="User" Multiplicity="1" />
+          <End Type="TransModel.UsersRole" Role="UsersRole" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UsersRole">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Permission">
+          <Key>
+            <PropertyRef Name="PermissionId" />
+          </Key>
+          <Property Name="PermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PermissionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="BranchID" Type="Int32" />
+          <NavigationProperty Name="Branch" Relationship="TransModel.FK_Permission_Branch" FromRole="Permission" ToRole="Branch" />
+          <NavigationProperty Name="UserPermissions" Relationship="TransModel.FK_UserPermission_Permission2" FromRole="Permission" ToRole="UserPermission" />
+          <NavigationProperty Name="RolePermissions" Relationship="TransModel.FK_RolePermission_Role" FromRole="Permission" ToRole="RolePermission" />
+          </EntityType>
+        <Association Name="FK_Permission_Branch">
+          <End Type="TransModel.Branch" Role="Branch" Multiplicity="0..1" />
+          <End Type="TransModel.Permission" Role="Permission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Branch">
+              <PropertyRef Name="BranchId" />
+            </Principal>
+            <Dependent Role="Permission">
+              <PropertyRef Name="BranchID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="UserPermission">
+          <Key>
+            <PropertyRef Name="UserPermissionId" />
+          </Key>
+          <Property Name="UserPermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" />
+          <Property Name="PermissionId" Type="Int32" />
+          <NavigationProperty Name="Permission" Relationship="TransModel.FK_UserPermission_Permission2" FromRole="UserPermission" ToRole="Permission" />
+          <NavigationProperty Name="User" Relationship="TransModel.FK_UserPermission_User" FromRole="UserPermission" ToRole="User" />
+        </EntityType>
+        <Association Name="FK_UserPermission_Permission2">
+          <End Type="TransModel.Permission" Role="Permission" Multiplicity="0..1" />
+          <End Type="TransModel.UserPermission" Role="UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserPermission_User">
+          <End Type="TransModel.User" Role="User" Multiplicity="0..1" />
+          <End Type="TransModel.UserPermission" Role="UserPermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserPermission">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RolePermission">
+          <Key>
+            <PropertyRef Name="RolePermissionId" />
+          </Key>
+          <Property Name="RolePermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int32" />
+          <Property Name="PermissionId" Type="Int32" />
+          <NavigationProperty Name="Permission" Relationship="TransModel.FK_RolePermission_Role" FromRole="RolePermission" ToRole="Permission" />
+          <NavigationProperty Name="Role" Relationship="TransModel.FK_RolePermission_Role1" FromRole="RolePermission" ToRole="Role" />
+        </EntityType>
+        <Association Name="FK_RolePermission_Role">
+          <End Type="TransModel.Permission" Role="Permission" Multiplicity="0..1" />
+          <End Type="TransModel.RolePermission" Role="RolePermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Permission">
+              <PropertyRef Name="PermissionId" />
+            </Principal>
+            <Dependent Role="RolePermission">
+              <PropertyRef Name="PermissionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolePermission_Role1">
+          <End Type="TransModel.Role" Role="Role" Multiplicity="0..1" />
+          <End Type="TransModel.RolePermission" Role="RolePermission" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="RoleId" />
+            </Principal>
+            <Dependent Role="RolePermission">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
     <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="TransModelStoreContainer" CdmEntityContainer="TransEntities">
-    <EntitySetMapping Name="Users">
-      <EntityTypeMapping TypeName="IsTypeOf(TransModel.User)">
-        <MappingFragment StoreEntitySet="Users">
-          <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
+          <EntitySetMapping Name="Branches">
+            <EntityTypeMapping TypeName="TransModel.Branch">
+              <MappingFragment StoreEntitySet="Branch">
+                <ScalarProperty Name="IsMaster" ColumnName="IsMaster" />
+                <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="BranchName" ColumnName="BranchName" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="TransModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreateOn" ColumnName="CreateOn" />
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="TransModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="BranchId" ColumnName="BranchId" />
+                <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="SurName" ColumnName="SurName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-          <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-          <ScalarProperty Name="SurName" ColumnName="SurName" />
-          <ScalarProperty Name="LastName" ColumnName="LastName" />
-          <ScalarProperty Name="Password" ColumnName="Password" />
-          <ScalarProperty Name="Email" ColumnName="Email" />
-          <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-  </EntityContainerMapping>
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UsersRoles">
+            <EntityTypeMapping TypeName="TransModel.UsersRole">
+              <MappingFragment StoreEntitySet="UsersRole">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RoleUserId" ColumnName="RoleUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Permissions">
+            <EntityTypeMapping TypeName="TransModel.Permission">
+              <MappingFragment StoreEntitySet="Permission">
+                <ScalarProperty Name="BranchID" ColumnName="BranchID" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="PermissionName" ColumnName="PermissionName" />
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserPermissions">
+            <EntityTypeMapping TypeName="TransModel.UserPermission">
+              <MappingFragment StoreEntitySet="UserPermission">
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserPermissionId" ColumnName="UserPermissionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolePermissions">
+            <EntityTypeMapping TypeName="TransModel.RolePermission">
+              <MappingFragment StoreEntitySet="RolePermission">
+                <ScalarProperty Name="PermissionId" ColumnName="PermissionId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RolePermissionId" ColumnName="RolePermissionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
