@@ -7,20 +7,21 @@
       <Diagram DiagramId="861a425a28fc4b8e95f912548e19bc66" Name="Diagram1" >
         <EntityTypeShape EntityType="TransModel.Branch" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="TransModel.Role" Width="1.5" PointX="5.25" PointY="9.375" />
-        <EntityTypeShape EntityType="TransModel.User" Width="1.5" PointX="3" PointY="4.625" />
         <AssociationConnector Association="TransModel.FK_Role_Branch" />
-        <AssociationConnector Association="TransModel.FK_Users_Branch" />
         <EntityTypeShape EntityType="TransModel.UsersRole" Width="1.5" PointX="5.25" PointY="6.125" />
         <AssociationConnector Association="TransModel.FK_UsersRole_Role" />
-        <AssociationConnector Association="TransModel.FK_UsersRole_User" />
         <EntityTypeShape EntityType="TransModel.Permission" Width="1.5" PointX="3" PointY="0.75" />
         <AssociationConnector Association="TransModel.FK_Permission_Branch" />
         <EntityTypeShape EntityType="TransModel.UserPermission" Width="1.5" PointX="5.25" PointY="3" />
         <AssociationConnector Association="TransModel.FK_UserPermission_Permission2" />
-        <AssociationConnector Association="TransModel.FK_UserPermission_User" />
         <EntityTypeShape EntityType="TransModel.RolePermission" Width="1.5" PointX="7.5" PointY="5.375" />
         <AssociationConnector Association="TransModel.FK_RolePermission_Role" />
         <AssociationConnector Association="TransModel.FK_RolePermission_Role1" />
+        <EntityTypeShape EntityType="TransModel.User" Width="1.5" PointX="3" PointY="4.375" />
+        <AssociationConnector Association="TransModel.FK_Users_Branch" />
+        <AssociationConnector Association="TransModel.FK_UserPermission_User" />
+        <AssociationConnector Association="TransModel.FK_UsersRole_User" />
+        <EntityTypeShape EntityType="TransModel.LookUp" Width="1.5" PointX="0.75" PointY="8.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

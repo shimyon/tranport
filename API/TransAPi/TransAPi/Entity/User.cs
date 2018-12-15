@@ -17,8 +17,8 @@ namespace TransAPi.Entity
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public User()
         {
-            this.UsersRoles = new HashSet<UsersRole>();
             this.UserPermissions = new HashSet<UserPermission>();
+            this.UsersRoles = new HashSet<UsersRole>();
         }
     
         public int UserId { get; set; }
@@ -33,8 +33,8 @@ namespace TransAPi.Entity
     
         public virtual Branch Branch { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UsersRole> UsersRoles { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserPermission> UserPermissions { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<UsersRole> UsersRoles { get; set; }
     }
 }

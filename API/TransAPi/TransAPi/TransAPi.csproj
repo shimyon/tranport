@@ -229,10 +229,14 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Api\LookUpController.cs" />
     <Compile Include="Controllers\Api\Users.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Entity\Branch.cs">
+      <DependentUpon>Trans.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\LookUp.cs">
       <DependentUpon>Trans.tt</DependentUpon>
     </Compile>
     <Compile Include="Entity\Permission.cs">
@@ -279,6 +283,7 @@
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Repository\ICRUD.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
+    <Compile Include="Services\LookServices.cs" />
     <Compile Include="Services\UserServices.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -359,6 +364,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

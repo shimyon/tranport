@@ -80,6 +80,7 @@ namespace TransAPi.Services
                         updateUser.FirstName = editObj.FirstName;
                         updateUser.LastName = editObj.LastName;
                         updateUser.Email = editObj.Email;
+                        updateUser.IsEnable = editObj.IsEnable;
                         db.SaveChanges();
                     }
                     isok = true;
